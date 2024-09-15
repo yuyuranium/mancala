@@ -1,27 +1,33 @@
 #include <mancala.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <strategy.h>
 #include <time.h>
 
 int main()
 {
     srand(time(NULL));
-    int round = 0;
-    char *player_name[2] = {"jumha", "yuyu"};
+
+    const strategy_t *strategies[3] = {chaotic(), maximal_first(),
+                                       minimal_first()};
+
+    const strategy_t *player[2] = {strategies[rand() % 3],
+                                   strategies[rand() % 3]};
+
+    printf("[%s vs. %s]\n\n", player[0]->name, player[1]->name);
+
     status_t status = OK;
-    mancala_t *game = new_game(player_name[0], player_name[1]);
+    mancala_t *game = new_game(player[0]->name, player[1]->name);
 
     while (status == OK && !end_of_game(game)) {
-        int pocket = 0;
-        player_t player = get_active_player(game);
-        do {
-            pocket = rand() % NUM_POCKETS_PER_PLAYER;
-        } while (!get_pocket(game, player, pocket));
-        status = make_move(game, pocket);
+        player_t p = get_active_player(game);
 
-        printf("[Round %d] %s selects pocket %d\n", round++,
-               player_name[player], pocket);
+        int pocket = (*player[p]->eval)(game, p);
+        printf("[Round %d]\n\n", get_round(game));
         print_game(game);
+        printf("\n%s selects %d\n", player[p]->name, pocket);
+
+        status = make_move(game, pocket);
         puts("\n");
     }
 
@@ -33,8 +39,9 @@ int main()
     if (winner == -1) {
         puts("Draw game");
     } else {
-        printf("The winner is %s\n", player_name[winner]);
+        printf("The winner is %s\n", player[winner]->name);
     }
+    print_game(game);
 
     return 0;
 }
