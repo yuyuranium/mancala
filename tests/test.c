@@ -14,7 +14,7 @@ int main()
     const strategy_t *player[2] = {strategies[rand() % 3],
                                    strategies[rand() % 3]};
 
-    printf("[%s vs. %s]\n\n", player[0]->name, player[1]->name);
+    printf("# %s vs. %s\n\n", player[0]->name, player[1]->name);
 
     status_t status = OK;
     mancala_t *game = new_game(player[0]->name, player[1]->name);
@@ -23,9 +23,9 @@ int main()
         player_t p = get_active_player(game);
 
         int pocket = (*player[p]->eval)(game, p);
-        printf("[Round %d]\n\n", get_round(game));
+        printf("[Round %d]\n", get_round(game));
         print_game(game);
-        printf("\n%s selects %d\n", player[p]->name, pocket);
+        printf("\n>>> %s selects %d\n", player[p]->name, pocket);
 
         status = make_move(game, pocket);
         puts("\n");
@@ -35,13 +35,13 @@ int main()
         return -1;
     }
 
+    print_game(game);
     player_t winner = get_winner(game);
     if (winner == -1) {
-        puts("Draw game");
+        puts("\n>>> Draw game");
     } else {
-        printf("The winner is %s\n", player[winner]->name);
+        printf("\n>>> The winner is %s\n", player[winner]->name);
     }
-    print_game(game);
 
     return 0;
 }

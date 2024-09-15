@@ -43,6 +43,7 @@ static int check_end_of_game(mancala_t *game)
     } else if (*game->store[A] < *game->store[B]) {
         game->winner = B;
     }
+    game->active_player = game->winner;
     game->end_of_game = 1;
     return 1;
 }
@@ -260,11 +261,11 @@ status_t make_move(mancala_t *game, int pocket)
 
 void print_game(const mancala_t *game)
 {
-#define DUP(n, ...)                   \
-    do {                              \
-        for (int i = 0; i < n; ++i) { \
-            printf(__VA_ARGS__);      \
-        }                             \
+#define DUP(n, ...)                     \
+    do {                                \
+        for (int i = 0; i < (n); ++i) { \
+            printf(__VA_ARGS__);        \
+        }                               \
     } while (0)
 
     char *player_name[2] = {
@@ -272,35 +273,66 @@ void print_game(const mancala_t *game)
         game->player_name[B] ? game->player_name[B] : "B",
     };
 
-    if (game->end_of_game) {
-        if (game->winner != -1) {
-            printf("%s wins the game\n", player_name[game->winner]);
-        } else {
-            printf("Game ties\n");
-        }
-    } else {
-        printf("%s's turn\n", player_name[game->active_player]);
-    }
+    int skip_width = strlen(player_name[A]);
 
-    // First line: Player A's pockets
-    DUP(strlen(player_name[A]), " ");
+    DUP(skip_width + 7, " ");
+    DUP(NUM_POCKETS_PER_PLAYER, "  %d   ", NUM_POCKETS_PER_PLAYER - i - 1);
+    printf("\n");
+
+    DUP(skip_width + 7, " ");
+    DUP(NUM_POCKETS_PER_PLAYER, "┌───┐ ");
+    printf("\n");
+
+    // Player A's pockets
+    DUP(skip_width, " ");
     printf(" ┌───┐ ");
-    DUP(NUM_POCKETS_PER_PLAYER, "(%3d) ",
+    DUP(NUM_POCKETS_PER_PLAYER, "│%3d│ ",
         game->pocket[A][NUM_POCKETS_PER_PLAYER - i - 1]);
     printf("┌───┐ ");
     printf("\n");
 
-    // Second line: Stores
+    DUP(skip_width, " ");
+    printf(" │   │ ");
+    DUP(NUM_POCKETS_PER_PLAYER, "└───┘ ");
+    printf("│   │ ");
+    printf("\n");
+
+    // Stores
     printf("%s │%3d│ ", player_name[A], *game->store[A]);
     DUP(NUM_POCKETS_PER_PLAYER, "      ");
     printf("│%3d│ %s", *game->store[B], player_name[B]);
     printf("\n");
 
-    // First line: Player B's pockets
-    DUP(strlen(player_name[A]), " ");
+    if (game->winner == A) {
+        DUP(skip_width, "═");
+    } else if (game->active_player == A) {
+        DUP(skip_width, "─");
+    } else {
+        DUP(skip_width, " ");
+    }
+    printf(" │   │ ");
+    DUP(NUM_POCKETS_PER_PLAYER, "┌───┐ ");
+    printf("│   │ ");
+    if (game->winner == B) {
+        DUP(strlen(player_name[B]), "═");
+    } else if (game->active_player == B) {
+        DUP(strlen(player_name[B]), "─");
+    }
+    printf("\n");
+
+    // Player B's pockets
+    DUP(skip_width, " ");
     printf(" └───┘ ");
-    DUP(NUM_POCKETS_PER_PLAYER, "(%3d) ", game->pocket[B][i]);
+    DUP(NUM_POCKETS_PER_PLAYER, "│%3d│ ", game->pocket[B][i]);
     printf("└───┘ ");
+    printf("\n");
+
+    DUP(skip_width + 7, " ");
+    DUP(NUM_POCKETS_PER_PLAYER, "└───┘ ");
+    printf("\n");
+
+    DUP(skip_width + 7, " ");
+    DUP(NUM_POCKETS_PER_PLAYER, "  %d   ", i);
     printf("\n");
 #undef DUP
 }
