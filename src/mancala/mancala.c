@@ -237,11 +237,11 @@ status_t make_move(mancala_t *game, int pocket)
     // 5. If the player's last stone is sowed in their empty pocket, then they
     //    can capture all of the opponent's stones in the opposite hole
     player_t onwer_of_last_pocket = &game->holes[index] > game->store[A];
-    if (game->holes[index] == 1 && active_player == onwer_of_last_pocket) {
-        int pocket_index = index % (NUM_POCKETS_PER_PLAYER + 1);
-        int *opposite_hole =
-            &game->pocket[opponent][NUM_POCKETS_PER_PLAYER - pocket_index - 1];
-
+    int pocket_index = index % (NUM_POCKETS_PER_PLAYER + 1);
+    int *opposite_hole =
+        &game->pocket[opponent][NUM_POCKETS_PER_PLAYER - pocket_index - 1];
+    if (active_player == onwer_of_last_pocket && game->holes[index] == 1 &&
+        *opposite_hole) {
         // Capture all stones in opposite hole and the last one sowed
         *game->store[active_player] += *opposite_hole + game->holes[index];
 
