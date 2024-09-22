@@ -83,19 +83,18 @@ chaotic │ 18│                                     │ 30│ minimal_first
 
 1. Define your strategy in `src/strategies.inc`
 
-  E.g., `STRATEGY(my_strategy)`
+    E.g., `STRATEGY(my_strategy)`
 
 2. Implement and assign your strategy in a C source file
 
-  E.g., in `src/my_strategy.c`:
+    E.g., in `src/my_strategy.c`:
+    ```c
+    #include "strategy.h"
 
-  ```c
-  #include "strategy.h"
+    static int strategy(const mancala_t *game, player_t player)
+    {
+        /* Implement your strategy here */
+    }
 
-  static int strategy(const mancala_t *game, player_t player)
-  {
-      /* Implement your strategy here */
-  }
-
-  strategy_t my_strategy = &strategy;
-  ```
+    strategy_t my_strategy = &strategy;
+    ```
