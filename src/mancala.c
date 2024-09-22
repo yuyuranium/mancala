@@ -1,8 +1,9 @@
 #include <assert.h>
-#include <mancala.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "mancala.h"
 
 struct mancala {
     player_t active_player;
@@ -16,7 +17,7 @@ struct mancala {
 
     int round;
     int end_of_game;
-    player_t winner;
+    int winner;
 };
 
 static int check_end_of_game(mancala_t *game)
@@ -192,7 +193,7 @@ int end_of_game(const mancala_t *game)
     return game->end_of_game;
 }
 
-player_t get_winner(const mancala_t *game)
+int get_winner(const mancala_t *game)
 {
     return game->winner;
 }
@@ -261,11 +262,11 @@ status_t make_move(mancala_t *game, int pocket)
 
 void print_game(const mancala_t *game)
 {
-#define DUP(n, ...)                     \
-    do {                                \
-        for (int i = 0; i < (n); ++i) { \
-            printf(__VA_ARGS__);        \
-        }                               \
+#define DUP(n, ...)                        \
+    do {                                   \
+        for (size_t i = 0; i < (n); ++i) { \
+            printf(__VA_ARGS__);           \
+        }                                  \
     } while (0)
 
     char *player_name[2] = {
@@ -273,10 +274,10 @@ void print_game(const mancala_t *game)
         game->player_name[B] ? game->player_name[B] : "B",
     };
 
-    int skip_width = strlen(player_name[A]);
+    size_t skip_width = strlen(player_name[A]);
 
     DUP(skip_width + 7, " ");
-    DUP(NUM_POCKETS_PER_PLAYER, "  %d   ", NUM_POCKETS_PER_PLAYER - i - 1);
+    DUP(NUM_POCKETS_PER_PLAYER, "  %zu   ", NUM_POCKETS_PER_PLAYER - i - 1);
     printf("\n");
 
     DUP(skip_width + 7, " ");
@@ -332,7 +333,7 @@ void print_game(const mancala_t *game)
     printf("\n");
 
     DUP(skip_width + 7, " ");
-    DUP(NUM_POCKETS_PER_PLAYER, "  %d   ", i);
+    DUP(NUM_POCKETS_PER_PLAYER, "  %zu   ", i);
     printf("\n");
 #undef DUP
 }

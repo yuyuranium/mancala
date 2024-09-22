@@ -32,7 +32,7 @@ int get_pocket(const mancala_t *, player_t, int);
 int get_store(const mancala_t *, player_t);
 int get_round(const mancala_t *);
 int end_of_game(const mancala_t *);
-player_t get_winner(const mancala_t *);
+int get_winner(const mancala_t *);
 
 // Play
 status_t make_move(mancala_t *, int);

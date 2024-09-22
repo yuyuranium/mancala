@@ -1,9 +1,10 @@
 #include <assert.h>
 #include <stdlib.h>
-#include <strategy.h>
 #include <time.h>
 
-static int eval(const mancala_t *game, player_t player)
+#include "strategy.h"
+
+static int strategy(const mancala_t *game, player_t player)
 {
     assert(player == get_active_player(game));
     int pocket = 0;
@@ -13,10 +14,4 @@ static int eval(const mancala_t *game, player_t player)
     return pocket;
 }
 
-static const strategy_t strategy = {.name = "chaotic", .eval = &eval};
-
-const strategy_t *chaotic()
-{
-    srand(time(NULL));
-    return &strategy;
-}
+strategy_t chaotic = &strategy;
