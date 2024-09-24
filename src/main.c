@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "mancala.h"
 #include "strategy.h"
@@ -53,7 +54,7 @@ static void usage(const char *prog)
 
 int main(int argc, char *argv[])
 {
-    srand(time(NULL));
+    srand(time(NULL) ^ getpid());
     int quiet = 0;
     int num_players = 0;
     struct {

@@ -98,3 +98,24 @@ chaotic │ 18│                                     │ 30│ minimal_first
 
     strategy_t my_strategy = &strategy;
     ```
+
+## Match
+
+Use Makefile target, `match` to run two strategies against each other for multiple times and see the
+result. The script will alternates the first player.
+
+```
+make match
+```
+
+### Available options
+
+- `P1`: player 1; defaults to `chaotic`
+- `P2`: player 2; defaults to `minimal_first`
+- `ROUNDS`: Number of rounds to run; defaults to 100
+
+E.g., matching `minimal_first` and `maximal_first` for 1000 times
+
+```
+make match P1=minimal_first P2=maximal_first ROUNDS=1000
+```
