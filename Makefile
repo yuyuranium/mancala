@@ -10,6 +10,7 @@ __dir := $(shell mkdir -p $(BUILD_DIR))
 
 SOURCES := $(wildcard $(SRC_DIR)/*.c)
 OBJECTS := $(SOURCES:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
+deps := $(OBJECTS:%.o=%.o.d)
 
 TARGET := $(BUILD_DIR)/mancala
 
@@ -23,7 +24,7 @@ $(TARGET): $(OBJECTS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	$(VECHO) "  CC\t$@\n"
-	$(Q)$(CC) -o $@ $(CFLAGS) -c $<
+	$(Q)$(CC) -o $@ $(CFLAGS) -c -MMD -MF $@.d $<
 
 P1 ?= chaotic
 P2 ?= minimal_first
@@ -45,3 +46,5 @@ match: $(TARGET)
 
 clean:
 	-$(RM) -rf $(BUILD_DIR)
+
+-include $(deps)
